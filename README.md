@@ -3,36 +3,33 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-local isBombTagger = false
-local originalPosition = nil
+local isThrowEnabled = false
 
 -- UI setup
 local screenGui = Instance.new("ScreenGui", player.PlayerGui)
-local mainButton = Instance.new("TextButton", screenGui)
-local destroyButton = Instance.new("TextButton", screenGui)
+local enableButton = Instance.new("TextButton", screenGui)
+local disableButton = Instance.new("TextButton", screenGui)
 
-mainButton.Position = UDim2.new(0.5, -50, 0, 50)
-mainButton.Size = UDim2.new(0, 100, 0, 50)
-mainButton.Text = "ဖွင့်မည်"
-mainButton.BackgroundColor3 = Color3.new(1, 1, 1) -- White
-mainButton.Draggable = true
+-- Enable Button setup
+enableButton.Position = UDim2.new(0.5, -50, 0, 50)
+enableButton.Size = UDim2.new(0, 100, 0, 50)
+enableButton.Text = "ဖွင့်မည်"
+enableButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Green
+enableButton.Draggable = true
 
-destroyButton.Position = UDim2.new(0.5, 75, 0, 70)
-destroyButton.Size = UDim2.new(0, 40, 0, 40)
-destroyButton.Text = "ဖျောက်မည်"
-destroyButton.BackgroundColor3 = Color3.new(1, 1, 1) -- White
-destroyButton.Draggable = true
-
--- Function to check if player has the bomb
-local function checkBombStatus()
-    -- Replace with actual condition to check bomb status
-    return character:FindFirstChild("Bomb") ~= nil
-end
+-- Disable Button setup
+disableButton.Position = UDim2.new(0.5, -50, 0, 110)
+disableButton.Size = UDim2.new(0, 100, 0, 50)
+disableButton.Text = "ပိတ်မည်"
+disableButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
+disableButton.Draggable = true
+disableButton.Visible = false -- Hide the disable button initially
 
 -- Function to find the closest player
 local function getClosestPlayer()
     local closestPlayer = nil
     local minDistance = math.huge
+
     for _, otherPlayer in pairs(game.Players:GetPlayers()) do
         if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local distance = (humanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Magnitude
@@ -45,39 +42,41 @@ local function getClosestPlayer()
     return closestPlayer
 end
 
--- Main function to handle teleportation
-local function handleTeleportation()
-    while isBombTagger do
-        if checkBombStatus() then
-            if not originalPosition then
-                originalPosition = humanoidRootPart.Position
+-- Function to throw the "Boom" at the closest player
+local function boomThrow()
+    if isThrowEnabled then
+        local closestPlayer = getClosestPlayer()
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            -- Move towards the closest player and throw boom
+            humanoidRootPart.CFrame = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
+            
+            -- Execute the throw action (replace with actual throwing event logic)
+            local throwEvent = game.ReplicatedStorage:FindFirstChild("ThrowEvent") -- Adjust the event name if needed
+            if throwEvent then
+                throwEvent:FireServer(closestPlayer.Character) -- Pass the target character
             end
-            local closestPlayer = getClosestPlayer()
-            if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                humanoidRootPart.CFrame = closestPlayer.Character.HumanoidRootPart.CFrame
-            end
-        elseif originalPosition then
-            humanoidRootPart.CFrame = CFrame.new(originalPosition)
-            originalPosition = nil
         end
-        wait(0.1)
     end
 end
 
--- Button functionality
-mainButton.MouseButton1Click:Connect(function()
-    isBombTagger = not isBombTagger
-    if isBombTagger then
-        mainButton.Text = "ဖွင့်မည်"
-        mainButton.BackgroundColor3 = Color3.new(0, 0, 1) -- Blue
-        handleTeleportation()
-    else
-        mainButton.Text = "ပိတ်မည်"
-        mainButton.BackgroundColor3 = Color3.new(1, 1, 1) -- White
-    end
+-- Enable Button functionality
+enableButton.MouseButton1Click:Connect(function()
+    isThrowEnabled = true
+    enableButton.Visible = false
+    disableButton.Visible = true
+
+    -- You can also bind this to an input key like E if needed:
+    local UIS = game:GetService("UserInputService")
+    UIS.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.E then -- Replace E with any key you want to use
+            boomThrow() -- Call the function when key is pressed
+        end
+    end)
 end)
 
--- Destroy button functionality
-destroyButton.MouseButton1Click:Connect(function()
-    screenGui:Destroy()
+-- Disable Button functionality
+disableButton.MouseButton1Click:Connect(function()
+    isThrowEnabled = false
+    enableButton.Visible = true
+    disableButton.Visible = false
 end)
