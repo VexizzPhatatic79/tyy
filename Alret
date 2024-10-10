@@ -1,0 +1,40 @@
+local hasBomb = false -- Flag to check if player has the bomb
+
+-- Alert Button setup
+local alertButton = Instance.new("TextButton", screenGui)
+alertButton.Position = UDim2.new(0.5, -50, 0, 170) -- Adjust the position as needed
+alertButton.Size = UDim2.new(0, 100, 0, 50) -- Adjust size
+alertButton.Text = "ဗုံးရနေပါပြီ!"
+alertButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
+alertButton.Visible = false -- Initially hidden
+
+-- Function to detect Bomb being added to player's inventory
+player.Backpack.ChildAdded:Connect(function(child)
+    if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
+        hasBomb = true
+        alertButton.Visible = true -- Show alert when player has the bomb
+    end
+end)
+
+-- Function to detect Bomb being removed from player's inventory
+player.Backpack.ChildRemoved:Connect(function(child)
+    if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
+        hasBomb = false
+        alertButton.Visible = false -- Hide alert when bomb is removed
+    end
+end)
+
+-- Optional: Also check if the Bomb is currently equipped in the player's character
+character.ChildAdded:Connect(function(child)
+    if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
+        hasBomb = true
+        alertButton.Visible = true -- Show alert when bomb is equipped
+    end
+end)
+
+character.ChildRemoved:Connect(function(child)
+    if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
+        hasBomb = false
+        alertButton.Visible = false -- Hide alert when bomb is unequipped
+    end
+end)
