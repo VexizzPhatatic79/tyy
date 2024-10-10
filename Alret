@@ -8,11 +8,20 @@ alertButton.Text = "ဗုံးရနေပါပြီ!"
 alertButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
 alertButton.Visible = false -- Initially hidden
 
+-- New button setup (Loud Mode Button)
+local loudButton = Instance.new("TextButton", screenGui)
+loudButton.Position = UDim2.new(0.5, -50, 0, 230) -- Adjust the position as needed
+loudButton.Size = UDim2.new(0, 100, 0, 50) -- Adjust size
+loudButton.Text = "အလန်းဖွင့်မည်!"
+loudButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Green
+loudButton.Visible = false -- Initially hidden
+
 -- Function to detect Bomb being added to player's inventory
 player.Backpack.ChildAdded:Connect(function(child)
     if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
         hasBomb = true
         alertButton.Visible = true -- Show alert when player has the bomb
+        loudButton.Visible = true -- Show the Loud Mode button when player has the bomb
     end
 end)
 
@@ -21,14 +30,16 @@ player.Backpack.ChildRemoved:Connect(function(child)
     if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
         hasBomb = false
         alertButton.Visible = false -- Hide alert when bomb is removed
+        loudButton.Visible = false -- Hide the Loud Mode button when bomb is removed
     end
 end)
 
--- Optional: Also check if the Bomb is currently equipped in the player's character
+-- Also check if the Bomb is currently equipped in the player's character
 character.ChildAdded:Connect(function(child)
     if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
         hasBomb = true
         alertButton.Visible = true -- Show alert when bomb is equipped
+        loudButton.Visible = true -- Show the Loud Mode button when bomb is equipped
     end
 end)
 
@@ -36,5 +47,14 @@ character.ChildRemoved:Connect(function(child)
     if child.Name == "Bomb" then -- Replace "Bomb" with actual bomb object name
         hasBomb = false
         alertButton.Visible = false -- Hide alert when bomb is unequipped
+        loudButton.Visible = false -- Hide the Loud Mode button when bomb is unequipped
+    end
+end)
+
+-- Function to handle loudButton click
+loudButton.MouseButton1Click:Connect(function()
+    if hasBomb then
+        print("Loud Mode Activated!") -- Replace this with actual loud mode functionality
+        -- Add any additional functionality here for loud mode
     end
 end)
