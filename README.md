@@ -33,10 +33,10 @@ throwButton.Text = "ပစ်မည်"
 throwButton.BackgroundColor3 = Color3.new(1, 1, 0) -- Yellow
 throwButton.Visible = false -- Hide initially, show only when enabled
 
--- Alert Button setup
+-- Alert Button setup (for the bomb status)
 local alertButton = Instance.new("TextButton", screenGui)
 alertButton.Position = UDim2.new(0.5, -25, 0, 170)
-alertButton.Size = UDim2.new(0, 50, 0, 25)
+alertButton.Size = UDim2.new(0, 100, 0, 25) -- Increase the size to fit the text
 alertButton.Text = ""
 alertButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
 alertButton.Visible = false -- Initially hidden
@@ -73,16 +73,6 @@ local function boomThrow()
             local throwEvent = game.ReplicatedStorage:FindFirstChild("ThrowEvent") -- Make sure the event is correct
             if throwEvent then
                 throwEvent:FireServer(closestPlayer.Character) -- Fire the event towards the closest player
-            end
-
-            -- Show alert only if the player has the Bomb
-            if hasBomb then
-                alertButton.Text = "ဗုံးရနေပါပြီ!" -- Alert message
-                alertButton.Visible = true -- Show alert
-
-                -- Hide the alert after the Bomb is thrown
-                wait(2) -- Wait for 2 seconds before hiding the alert
-                alertButton.Visible = false -- Hide the alert
             end
 
             wait(0.5) -- Small delay after the throw
