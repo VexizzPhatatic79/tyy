@@ -42,12 +42,14 @@ local function getClosestPlayer()
     for _, otherPlayer in pairs(game.Players:GetPlayers()) do
         if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local distance = (humanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Magnitude
+            print("Distance to " .. otherPlayer.Name .. ": " .. distance) -- Debugging purpose
             if distance < minDistance then
                 minDistance = distance
                 closestPlayer = otherPlayer
             end
         end
     end
+    print("Closest Player: " .. (closestPlayer and closestPlayer.Name or "None"))
     return closestPlayer
 end
 
@@ -57,17 +59,46 @@ local function boomThrow()
         local closestPlayer = getClosestPlayer()
         if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
             -- Move to the closest player's position and throw boom
+            print("Moving to " .. closestPlayer.Name .. "'s position")
             humanoidRootPart.CFrame = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
 
             -- Adjust the actual throwing logic here
             local throwEvent = game.ReplicatedStorage:FindFirstChild("ThrowEvent") -- Make sure the event is correct
             if throwEvent then
                 throwEvent:FireServer(closestPlayer.Character) -- Fire the event towards the closest player
+                print("Throw event fired at " .. closestPlayer.Name)
             else
                 print("Throw event not found in ReplicatedStorage")
             end
+        else
+            print("No closest player found to throw!")
         end
     end
 end
 
--- Enable
+-- Enable Button functionality
+enableButton.MouseButton1Click:Connect(function()
+    isThrowEnabled = true
+    enableButton.Visible = false
+    disableButton.Visible = true
+    throwButton.Visible = true
+    print("Throwing enabled")
+end)
+
+-- Disable Button functionality
+disableButton.MouseButton1Click:Connect(function()
+    isThrowEnabled = false
+    enableButton.Visible = true
+    disableButton.Visible = false
+    throwButton.Visible = false
+    print("Throwing disabled")
+end)
+
+-- Throw Button functionality
+throwButton.MouseButton1Click:Connect(function()
+    if isThrowEnabled then
+        boomThrow() -- Call the throw function when the button is clicked
+    else
+        print("Throw is disabled!")
+    end
+end)
