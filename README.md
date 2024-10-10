@@ -50,10 +50,12 @@ local function boomThrow()
             -- Move towards the closest player and throw boom
             humanoidRootPart.CFrame = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
             
-            -- Execute the throw action (replace with actual throwing event logic)
-            local throwEvent = game.ReplicatedStorage:FindFirstChild("ThrowEvent") -- Adjust the event name if needed
+            -- Replace this part with your own throwing logic
+            local throwEvent = game.ReplicatedStorage:FindFirstChild("ThrowEvent") -- Replace with correct event
             if throwEvent then
-                throwEvent:FireServer(closestPlayer.Character) -- Pass the target character
+                throwEvent:FireServer(closestPlayer.Character) -- Fire the event towards the closest player
+            else
+                print("Throw event not found in ReplicatedStorage")
             end
         end
     end
@@ -65,10 +67,10 @@ enableButton.MouseButton1Click:Connect(function()
     enableButton.Visible = false
     disableButton.Visible = true
 
-    -- You can also bind this to an input key like E if needed:
+    -- Input key (e.g. E) to trigger the throw
     local UIS = game:GetService("UserInputService")
     UIS.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.E then -- Replace E with any key you want to use
+        if input.KeyCode == Enum.KeyCode.E and isThrowEnabled then -- Make sure throw is enabled
             boomThrow() -- Call the function when key is pressed
         end
     end)
