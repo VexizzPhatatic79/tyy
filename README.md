@@ -4,7 +4,7 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local isThrowEnabled = false
-local originalPosition = nil -- Store original position when throw starts
+local originalPosition = nil
 
 -- UI setup
 local screenGui = Instance.new("ScreenGui", player.PlayerGui)
@@ -34,6 +34,22 @@ throwButton.Text = "ပစ်မည်"
 throwButton.BackgroundColor3 = Color3.new(1, 1, 0) -- Yellow
 throwButton.Draggable = true
 throwButton.Visible = false -- Hide initially, show only when enabled
+
+-- Bomb Alert Button setup (for displaying "ဗုံးရနေပီ")
+local bombAlertButton = Instance.new("TextButton", screenGui)
+bombAlertButton.Position = UDim2.new(0.5, -75, 0, 170)
+bombAlertButton.Size = UDim2.new(0, 150, 0, 50) -- Button size
+bombAlertButton.Text = "ဗုံးမရသေး"
+bombAlertButton.BackgroundColor3 = Color3.new(1, 1, 1) -- White (default)
+bombAlertButton.Visible = false -- Hidden until bomb is received
+
+-- Function to change bomb alert button colors
+local function updateBombButtonColors()
+    while isThrowEnabled do
+        bombAlertButton.BackgroundColor3 = Color3.fromRGB(math.random(0,255), math.random(0,255), math.random(0,255))
+        wait(0.5) -- Change color every 0.5 seconds
+    end
+end
 
 -- Function to find the closest player
 local function getClosestPlayer()
@@ -72,6 +88,11 @@ local function boomThrow()
             -- After throwing, return to the original position
             wait(0.5) -- Small delay after the throw
             humanoidRootPart.CFrame = originalPosition -- Return to original position
+
+            -- Update bomb alert
+            bombAlertButton.Text = "ဗုံးရနေပီ"
+            bombAlertButton.Visible = true
+            spawn(updateBombButtonColors) -- Start the color changing
         end
     end
 end
@@ -90,6 +111,7 @@ disableButton.MouseButton1Click:Connect(function()
     enableButton.Visible = true
     disableButton.Visible = false
     throwButton.Visible = false
+    bombAlertButton.Visible = false -- Hide the bomb alert button
 end)
 
 -- Throw Button functionality
