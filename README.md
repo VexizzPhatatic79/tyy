@@ -4,7 +4,7 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local isThrowEnabled = false
-local originalPosition = humanoidRootPart.CFrame -- Store the original position
+local originalPosition = nil -- Store original position when throw starts
 
 -- UI setup
 local screenGui = Instance.new("ScreenGui", player.PlayerGui)
@@ -57,6 +57,10 @@ local function boomThrow()
     if isThrowEnabled then
         local closestPlayer = getClosestPlayer()
         if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            -- Save the current position before throwing
+            originalPosition = humanoidRootPart.CFrame -- Save the player's current position before throwing
+
+            -- Move to closest player's position and throw
             humanoidRootPart.CFrame = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
 
             -- Adjust the actual throwing logic here
@@ -78,7 +82,6 @@ enableButton.MouseButton1Click:Connect(function()
     enableButton.Visible = false
     disableButton.Visible = true
     throwButton.Visible = true
-    originalPosition = humanoidRootPart.CFrame -- Save original position when enabled
 end)
 
 -- Disable Button functionality
