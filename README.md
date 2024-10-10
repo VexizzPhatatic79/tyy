@@ -9,40 +9,37 @@ local hasBomb = false -- Flag to check if player has the bomb
 
 -- UI setup
 local screenGui = Instance.new("ScreenGui", player.PlayerGui)
-local enableButton = Instance.new("TextButton", screenGui)
-local disableButton = Instance.new("TextButton", screenGui)
-local throwButton = Instance.new("TextButton", screenGui)
-local alertButton = Instance.new("TextButton", screenGui)
 
 -- Enable Button setup
+local enableButton = Instance.new("TextButton", screenGui)
 enableButton.Position = UDim2.new(0.5, -25, 0, 50)
 enableButton.Size = UDim2.new(0, 50, 0, 25)
 enableButton.Text = "ဖွင့်မည်"
 enableButton.BackgroundColor3 = Color3.new(0, 1, 0) -- Green
-enableButton.Draggable = true
 
 -- Disable Button setup
+local disableButton = Instance.new("TextButton", screenGui)
 disableButton.Position = UDim2.new(0.5, -25, 0, 90)
 disableButton.Size = UDim2.new(0, 50, 0, 25)
 disableButton.Text = "ပိတ်မည်"
 disableButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
-disableButton.Draggable = true
 disableButton.Visible = false -- Hide the disable button initially
 
 -- Throw Button setup
+local throwButton = Instance.new("TextButton", screenGui)
 throwButton.Position = UDim2.new(0.5, -25, 0, 130)
 throwButton.Size = UDim2.new(0, 50, 0, 25)
 throwButton.Text = "ပစ်မည်"
 throwButton.BackgroundColor3 = Color3.new(1, 1, 0) -- Yellow
-throwButton.Draggable = true
 throwButton.Visible = false -- Hide initially, show only when enabled
 
 -- Alert Button setup
-alertButton.Position = UDim2.new(0.5, -75, 0, 170)
-alertButton.Size = UDim2.new(0, 150, 0, 50)
+local alertButton = Instance.new("TextButton", screenGui)
+alertButton.Position = UDim2.new(0.5, -25, 0, 170)
+alertButton.Size = UDim2.new(0, 50, 0, 25)
 alertButton.Text = ""
-alertButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red background for alert
-alertButton.Visible = false -- Hidden until the bomb is obtained
+alertButton.BackgroundColor3 = Color3.new(1, 0, 0) -- Red
+alertButton.Visible = false -- Initially hidden
 
 -- Function to find the closest player
 local function getClosestPlayer()
@@ -61,7 +58,7 @@ local function getClosestPlayer()
     return closestPlayer
 end
 
--- Function to throw the "Boom" at the closest player and return to original position
+-- Function to throw the Bomb at the closest player
 local function boomThrow()
     if isThrowEnabled and hasBomb then
         local closestPlayer = getClosestPlayer()
