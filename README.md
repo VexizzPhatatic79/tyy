@@ -4,6 +4,7 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local isThrowEnabled = false
+local originalPosition = humanoidRootPart.CFrame -- Store the original position
 
 -- UI setup
 local screenGui = Instance.new("ScreenGui", player.PlayerGui)
@@ -53,7 +54,7 @@ local function getClosestPlayer()
     return closestPlayer
 end
 
--- Function to throw the "Boom" at the closest player
+-- Function to throw the "Boom" at the closest player and return to original position
 local function boomThrow()
     if isThrowEnabled then
         local closestPlayer = getClosestPlayer()
@@ -70,6 +71,11 @@ local function boomThrow()
             else
                 print("Throw event not found in ReplicatedStorage")
             end
+
+            -- After throwing, return to the original position
+            wait(0.5) -- Small delay after the throw
+            humanoidRootPart.CFrame = originalPosition -- Return to original position
+            print("Returned to original position")
         else
             print("No closest player found to throw!")
         end
@@ -82,6 +88,7 @@ enableButton.MouseButton1Click:Connect(function()
     enableButton.Visible = false
     disableButton.Visible = true
     throwButton.Visible = true
+    originalPosition = humanoidRootPart.CFrame -- Save original position when enabled
     print("Throwing enabled")
 end)
 
