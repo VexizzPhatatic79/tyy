@@ -98,4 +98,3 @@ throwButton.MouseButton1Click:Connect(function()
         boomThrow() -- Call the throw function when the button is clicked
     end
 end)
-ဘယ်လိုအလုပ်လုပ်လဲ
